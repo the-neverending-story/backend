@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import pgdb from '../db'
 
 @Injectable()
 export class UsersService {
@@ -12,11 +13,13 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  findOne(id: number) {
-    console.log(id)
+  async findOne(username: string) {
+    const [user] = await pgdb`
+      select id, username, created_at, role from users where username = ${username};
+    `
     return {
-      id: 7,
-      username: "asdfca123"
+      id: user.id,
+      username: user.username
     };
   }
 

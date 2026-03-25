@@ -14,7 +14,7 @@ type Mutation {
 }
 
 type Query {
-  user(id: Int!): User!
+  user(username: String!): User!
   users: [User!]!
 }
 
@@ -25,9 +25,15 @@ input UpdateUserInput {
 }
 
 type User {
-  """Example field (placeholder)"""
-  id: Int!
+  """Timestamp of creation"""
+  created_at: String!
 
-  """Example field (placeholder)"""
+  """uuid"""
+  id: String!
+
+  """Role of the user (e.g. admin, moderator, default)"""
+  role: String!
+
+  """Username"""
   username: String!
 }

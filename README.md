@@ -1,2 +1,1 @@
-# backend
-node.js backend
+nestjs/graphql backend

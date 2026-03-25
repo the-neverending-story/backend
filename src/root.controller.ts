@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import { Controller, Get, HttpCode } from '@nestjs/common';
 
 @Controller('')
