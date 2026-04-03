@@ -1,5 +1,5 @@
-import postgres from 'postgres'
+import postgres from "postgres";
 
-const pgdb = postgres(process.env.DATABASE_URL) // will use psql environment variables
+const pgdb = postgres(process.env.DATABASE_URL); // will use psql environment variables
 
-export default pgdb
+export default pgdb;

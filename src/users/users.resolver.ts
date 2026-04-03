@@ -1,35 +1,34 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { Resolver, Query, Mutation, Args, Context } from "@nestjs/graphql";
+import { UsersService } from "./users.service";
+import { User } from "./entities/user.entity";
+import { Response } from "express";
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
+  @Query(() => User)
+  user() {
+    return;
   }
 
-  @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.usersService.findAll();
+  @Mutation(() => User, { name: "register" })
+  register(
+    @Args("email", { type: () => String }) email: string,
+    @Args("username", { type: () => String }) username: string,
+    @Args("password", { type: () => String }) password: string,
+    @Context() context: { res: Response },
+  ) {
+    return this.usersService.register(email, username, password, context.res);
   }
 
-  @Query(() => User, { name: 'user' })
-  async findOne(@Args('username', { type: () => String }) username: string) {
-    return await this.usersService.findOne(username);
-  }
-
-  @Mutation(() => User)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput.id, updateUserInput);
-  }
-
-  @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.remove(id);
+  @Mutation(() => User, { name: "login" })
+  login(
+    @Args("username") username: string,
+    @Args("password") password: string,
+    @Context() context: { res: Response },
+  ) {
+    const result = this.usersService.login(username, password, context.res);
+    return result;
   }
 }

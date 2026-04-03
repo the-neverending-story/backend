@@ -1,33 +1,82 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
-import pgdb from '../db'
+import { Injectable } from "@nestjs/common";
+import pgdb from "../db";
+import bcrypt from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
+import { Response } from "express";
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
-  }
+  constructor(private jwtService: JwtService) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
+  async register(
+    email: string,
+    username: string,
+    password: string,
+    res: Response,
+  ) {
+    const [usersWithName] = await pgdb`
+      SELECT COUNT(*) FROM users WHERE username = ${username};
+    `;
 
-  async findOne(username: string) {
-    const [user] = await pgdb`
-      select id, username, created_at, role from users where username = ${username};
-    `
+    if (Number(usersWithName.count)) {
+      throw new Error("Username already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const [userId] = await pgdb`
+      INSERT INTO users (username, password, email, role) VALUES (${username}, ${hashedPassword}, ${email}, '1') RETURNING id
+    `;
+
+    const payload = {
+      username: username,
+      id: userId.id as string,
+    };
+    const token = await this.jwtService.signAsync(payload);
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 3600000,
+    });
+
     return {
-      id: user.id,
-      username: user.username
+      username: "asdfca123",
     };
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
+  async login(username: string, password: string, res: Response) {
+    const [user] = await pgdb`
+      select username, password from users where username = ${username};
+    `;
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const result: boolean = await bcrypt.compare(
+      password,
+      user.password as string,
+    );
+
+    if (result) {
+      const payload = {
+        username: username,
+        id: user.id as string,
+      };
+      const token = await this.jwtService.signAsync(payload);
+      res.cookie("access_token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        maxAge: 3600000,
+      });
+
+      return {
+        username: "asdfca123",
+      };
+    } else {
+      throw new Error("Incorrect password");
+    }
   }
 }
