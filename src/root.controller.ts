@@ -11,7 +11,7 @@ export class RootController {
     return "Invalid Path";
   }
 
-  @Get('health')
+  @Get("health")
   @HttpCode(200)
   health(): string {
     return "All good";

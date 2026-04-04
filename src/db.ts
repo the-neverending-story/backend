@@ -1,14 +1,16 @@
 import postgres from "postgres";
 
-const pgdb = postgres(
-    {
-    password: 'Pzc6CjQtUcn04fqpphl9XqPvALGrWwHR',
-    host: 'tns-db-cluster.cl44isaiiamm.us-west-2.rds.amazonaws.com',
-    port: 5432,
-    database: 'theneverendingstory',
-    user: 'postgres',
-    ssl: { rejectUnauthorized: false, ca: require('fs').readFileSync('./us-west-2-bundle.pem').toString() }
-}
-); // will use psql environment variables
+const pgdb = postgres({
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  ssl: {
+    rejectUnauthorized: false,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access
+    ca: require("fs").readFileSync("./us-west-2-bundle.pem").toString(),
+  },
+}); // will use psql environment variables
 
 export default pgdb;
