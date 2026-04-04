@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-require-imports
 require("dotenv").config();
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-member-access
-require("child_process").exec("npm run migrate up", (err, stdout, stderr) => {
+require("child_process").exec("DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_DATABASE npm run migrate up", (err, stdout, stderr) => {
   console.log("migration successful");
   if (err) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
