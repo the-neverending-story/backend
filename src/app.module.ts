@@ -13,6 +13,7 @@ import { JwtModule } from "@nestjs/jwt";
       sortSchema: true,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       context: ({ req, res }) => ({ req, res }),
+      playground: false,
     }),
     UsersModule,
     JwtModule.register({
