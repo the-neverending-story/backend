@@ -14,10 +14,11 @@ require("node-pg-migrate").runner({
       ca: require("fs").readFileSync("./us-west-2-bundle.pem").toString(),
     },
   },
-  dir: 'migrations',
-  direction: 'up',
-  migrationsTable: 'pgmigrations'
-})
+  dir: "migrations",
+  direction: "up",
+  migrationsTable: "pgmigrations",
+  count: Infinity,
+});
 
 import { Controller, Get, HttpCode } from "@nestjs/common";
 

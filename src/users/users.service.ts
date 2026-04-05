@@ -14,24 +14,42 @@ export class UsersService {
     password: string,
     res: Response,
   ) {
+    if (!email.match("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$")) {
+      throw new Error("invalid email");
+    }
+    if (!username.match("^[a-zA-Z0-9]{8,}$")) {
+      throw new Error("invalid username");
+    }
+    if (password.match("^(.{0,7}|[^0-9]*|[^A-Z]*|[^a-z]*)$")) {
+      throw new Error("invalid password");
+    } // if it matches, its a bad password
+
     const [usersWithName] = await pgdb`
       SELECT COUNT(*) FROM users WHERE username = ${username};
     `;
-
     if (Number(usersWithName.count)) {
-      throw new Error("Username already exists");
+      throw new Error("Username taken");
+    }
+
+    const [usersWithEmail] = await pgdb`
+      SELECT COUNT(*) FROM users WHERE email = ${email};
+    `;
+    if (Number(usersWithEmail.count)) {
+      throw new Error("Account with email already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const [userId] = await pgdb`
-      INSERT INTO users (username, password, email, role) VALUES (${username}, ${hashedPassword}, ${email}, '1') RETURNING id
+    const [userIdAndRole] = await pgdb`
+      INSERT INTO users (username, password, email, role) VALUES (${username}, ${hashedPassword}, ${email}, 'default') RETURNING id, role
     `;
 
     const payload = {
       username: username,
-      id: userId.id as string,
+      id: userIdAndRole.id as string,
+      role: userIdAndRole.role as string,
     };
+
     const token = await this.jwtService.signAsync(payload);
     res.cookie("access_token", token, {
       httpOnly: true,
@@ -41,13 +59,14 @@ export class UsersService {
     });
 
     return {
-      username: "asdfca123",
+      username,
+      id: userIdAndRole.id as string,
     };
   }
 
   async login(username: string, password: string, res: Response) {
     const [user] = await pgdb`
-      select username, password from users where username = ${username};
+      select username, password, role from users where username = ${username};
     `;
 
     if (!user) {
@@ -59,24 +78,27 @@ export class UsersService {
       user.password as string,
     );
 
-    if (result) {
-      const payload = {
-        username: username,
-        id: user.id as string,
-      };
-      const token = await this.jwtService.signAsync(payload);
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        maxAge: 3600000,
-      });
-
-      return {
-        username: "asdfca123",
-      };
-    } else {
+    if (!result) {
       throw new Error("Incorrect password");
     }
+
+    const payload = {
+      username: username,
+      id: user.id as string,
+      role: user.role as string,
+    };
+    const token = await this.jwtService.signAsync(payload);
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 3600000,
+    });
+
+    return {
+      username: "asdfca123",
+      role: user.role as string,
+      id: user.id as string,
+    };
   }
 }
