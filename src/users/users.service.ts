@@ -66,7 +66,7 @@ export class UsersService {
 
   async login(username: string, password: string, res: Response) {
     const [user] = await pgdb`
-      select username, password, role from users where username = ${username};
+      select username, password, role, id from users where username = ${username};
     `;
 
     if (!user) {
@@ -87,6 +87,7 @@ export class UsersService {
       id: user.id as string,
       role: user.role as string,
     };
+
     const token = await this.jwtService.signAsync(payload);
     res.cookie("access_token", token, {
       httpOnly: true,

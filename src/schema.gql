@@ -2,12 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Creation {
+  """id"""
+  id: String!
+}
+
 type Mutation {
+  createCreation(category: String!, content: String!, name: String!): Creation!
   login(password: String!, username: String!): User!
   register(email: String!, password: String!, username: String!): User!
 }
 
 type Query {
+  getPageOf: Creation!
   user: User!
 }
 

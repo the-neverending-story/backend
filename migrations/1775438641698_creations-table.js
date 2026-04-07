@@ -9,36 +9,33 @@ export const shorthands = undefined;
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-    pgm.createTable('users', {
+    pgm.createTable('creations', {
         id: {
             type: 'uuid',
             primaryKey: true,
             default: pgm.func('gen_random_uuid()')
         },
-        username: {
-            type: 'varchar(50)',
-            notNull: true
-        },
-        created_at: {
-            type: 'timestamp',
+        name: {
+            type: 'text',
             notNull: true,
-            default: pgm.func('current_timestamp'),
+            unique: true
         },
-        password: {
-            type: 'varchar(128)',
+        category: {
+            type: 'text',
             notNull: true,
         },
-        email: {
-            type: 'varchar(254)',
+        content: {
+            type: 'text',
             notNull: true
         },
-        role: {
-            type: 'varchar(25)',
+        author_id: {
+            type: 'uuid',
+            references: 'users',
+            onDelete: 'cascade',
             notNull: true
         }
     });
-};
-
+}
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
  * @param run {() => void | undefined}

@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { RootController } from "./root.controller";
 import { UsersModule } from "./users/users.module";
 import { JwtModule } from "@nestjs/jwt";
+import { CreationsModule } from "./creations/creations.module";
 
 @Module({
   imports: [
@@ -19,8 +20,8 @@ import { JwtModule } from "@nestjs/jwt";
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: "1h" },
     }),
+    CreationsModule,
   ],
   controllers: [RootController],
 })
