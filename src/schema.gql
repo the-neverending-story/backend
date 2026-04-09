@@ -3,8 +3,26 @@
 # ------------------------------------------------------
 
 type Creation {
-  """id"""
+  """authors username"""
+  author_username: String!
+
+  """category of the creation"""
+  category: String!
+
+  """content of the creation"""
+  content: String!
+
+  """creation date"""
+  created_at: String!
+
+  """creation id"""
   id: String!
+
+  """name of the creation"""
+  name: String!
+
+  """creation score"""
+  rating: Int!
 }
 
 type Mutation {
@@ -14,7 +32,8 @@ type Mutation {
 }
 
 type Query {
-  getPageOf: Creation!
+  getCreation(id: String!): Creation!
+  getCreations(page: Int!): [Creation!]!
   user: User!
 }
 

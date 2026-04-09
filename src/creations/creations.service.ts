@@ -19,4 +19,21 @@ export class CreationsService {
 
     return { id: id.id as string };
   }
+
+  async getPageOfCreations(page: number) {
+    const creations = await pgdb`
+      SELECT
+        username author_username,
+        name,
+        creations.id,
+        creations.created_at,
+        category,
+        (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE ratings.creation_id = creations.id) AS rating
+      FROM creations JOIN users ON users.id = creations.author_id LIMIT 15 OFFSET ${(page - 1) * 15};
+    `;
+
+    return creations.map((e) => {
+      return { ...e, created_at: new Date(e.created_at).toDateString() };
+    });
+  }
 }

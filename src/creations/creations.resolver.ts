@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Context } from "@nestjs/graphql";
+import { Resolver, Query, Mutation, Args, Context, Int } from "@nestjs/graphql";
 import { CreationsService } from "./creations.service";
 import { Creation } from "./entities/creation.entity";
 import { Request } from "express";
@@ -17,8 +17,13 @@ export class CreationsResolver {
     return this.creationsService.create(name, category, content, context.req);
   }
 
+  @Query(() => [Creation], { name: "getCreations" })
+  getPageOfCreations(@Args("page", { type: () => Int }) page: number) {
+    return this.creationsService.getPageOfCreations(page);
+  }
+
   @Query(() => Creation)
-  getPageOf() {
-    return;
+  getCreation() {
+    return {};
   }
 }
