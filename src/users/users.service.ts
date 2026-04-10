@@ -53,9 +53,8 @@ export class UsersService {
     const token = await this.jwtService.signAsync(payload);
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 3600000,
+      sameSite: "none",
+      secure: true,
     });
 
     return {
@@ -91,9 +90,8 @@ export class UsersService {
     const token = await this.jwtService.signAsync(payload);
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      maxAge: 3600000,
+      sameSite: "none",
+      secure: true,
     });
 
     return {
