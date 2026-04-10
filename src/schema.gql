@@ -32,7 +32,7 @@ type Mutation {
 }
 
 type Query {
-  getCreation(id: String!): Creation!
+  getCreation: Creation!
   getCreations(page: Int!): [Creation!]!
   user: User!
 }
