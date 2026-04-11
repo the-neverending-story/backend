@@ -42,7 +42,7 @@ export class RatingsService {
     }
 
     const [rating] = await pgdb`
-      SELECT is_positive FROM ratings WHERE voter_id = ${user.id}
+      SELECT is_positive FROM ratings WHERE voter_id = ${user.id} AND creation_id = ${id};
     `;
 
     if (rating) {
