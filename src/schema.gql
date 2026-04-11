@@ -26,15 +26,26 @@ type Creation {
 }
 
 type Mutation {
+  addRating(creationId: String!, isPositive: Boolean!): Rating!
   createCreation(category: String!, content: String!, name: String!): Creation!
   login(password: String!, username: String!): User!
   register(email: String!, password: String!, username: String!): User!
+  removeRating(creation_id: String!): Rating!
 }
 
 type Query {
-  getCreation: Creation!
+  getCreation(id: String!): Creation!
   getCreations(page: Int!): [Creation!]!
+  getRate(id: String!): Rating!
   user: User!
+}
+
+type Rating {
+  """id"""
+  id: String!
+
+  """true if +1, false if -1"""
+  is_positive: String!
 }
 
 type User {

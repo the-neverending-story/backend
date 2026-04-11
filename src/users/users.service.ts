@@ -45,7 +45,7 @@ export class UsersService {
     `;
 
     const payload = {
-      username: username,
+      username,
       id: userIdAndRole.id as string,
       role: userIdAndRole.role as string,
     };
@@ -59,6 +59,7 @@ export class UsersService {
 
     return {
       username,
+      role: userIdAndRole.role as string,
       id: userIdAndRole.id as string,
     };
   }
@@ -95,7 +96,7 @@ export class UsersService {
     });
 
     return {
-      username: "asdfca123",
+      username,
       role: user.role as string,
       id: user.id as string,
     };

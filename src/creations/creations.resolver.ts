@@ -22,8 +22,8 @@ export class CreationsResolver {
     return this.creationsService.getPageOfCreations(page);
   }
 
-  @Query(() => Creation)
-  getCreation() {
-    return {};
+  @Query(() => Creation, { name: "getCreation" })
+  getCreation(@Args("id", { type: () => String }) id: string) {
+    return this.creationsService.getCreationById(id);
   }
 }

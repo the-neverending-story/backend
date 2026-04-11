@@ -36,4 +36,20 @@ export class CreationsService {
       return { ...e, created_at: new Date(e.created_at).toDateString() };
     });
   }
+
+  async getCreationById(id: string) {
+    const [creation] = await pgdb`
+      SELECT
+        username author_username,
+        name,
+        creations.id,
+        creations.created_at,
+        category,
+        content,
+        (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE ratings.creation_id = creations.id) AS rating
+      FROM creations JOIN users ON users.id = creations.author_id WHERE creations.id = ${id};
+    `;
+
+    return creation;
+  }
 }

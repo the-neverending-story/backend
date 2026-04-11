@@ -5,6 +5,7 @@ import { RootController } from "./root.controller";
 import { UsersModule } from "./users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CreationsModule } from "./creations/creations.module";
+import { RatingsModule } from "./ratings/ratings.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CreationsModule } from "./creations/creations.module";
       secret: process.env.JWT_SECRET,
     }),
     CreationsModule,
+    RatingsModule,
   ],
   controllers: [RootController],
 })
