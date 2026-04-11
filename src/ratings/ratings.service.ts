@@ -38,7 +38,7 @@ export class RatingsService {
         secret: process.env.JWT_SECRET,
       });
     } catch {
-      return { id: "0" };
+      return { id: "0", is_positive: "" };
     }
 
     const [rating] = await pgdb`
@@ -52,6 +52,6 @@ export class RatingsService {
       };
     }
 
-    return { id: "0" }
+    return { id: "0", is_positive: "" }
   }
 }
