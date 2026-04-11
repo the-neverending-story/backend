@@ -52,6 +52,6 @@ export class RatingsService {
       };
     }
 
-    return;
+    return { id: "0" }
   }
 }
