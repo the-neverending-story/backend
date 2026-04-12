@@ -18,12 +18,20 @@ export class CreationsResolver {
     @Args("content", { type: () => String }) content: string,
     @Context() context: { req: Request & { user: JwtPayload } },
   ) {
-    return this.creationsService.create(name, category, content, context.req.user);
+    return this.creationsService.create(
+      name,
+      category,
+      content,
+      context.req.user,
+    );
   }
 
   @Query(() => [Creation], { name: "getCreations" })
-  getPageOfCreations(@Args("page", { type: () => Int }) page: number) {
-    return this.creationsService.getPageOfCreations(page);
+  getPageOfCreations(
+    @Args("page", { type: () => Int }) page: number,
+    @Args("category", { type: () => String, nullable: true }) category: string,
+  ) {
+    return this.creationsService.getPageOfCreations(page, category);
   }
 
   @Query(() => Creation, { name: "getCreation" })

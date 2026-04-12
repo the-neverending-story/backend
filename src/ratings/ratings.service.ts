@@ -52,6 +52,6 @@ export class RatingsService {
       };
     }
 
-    return { id: "0", is_positive: "" }
+    return { id: "0", is_positive: "" };
   }
 }
