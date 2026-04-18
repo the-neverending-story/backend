@@ -35,7 +35,7 @@ type Mutation {
 
 type Query {
   getCreation(id: String!): Creation!
-  getCreations(category: String, page: Int!): [Creation!]!
+  getCreations(author: String, category: String, name: String, page: Int!): [Creation!]!
   getRate(id: String!): Rating!
   user: User!
 }

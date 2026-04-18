@@ -30,8 +30,10 @@ export class CreationsResolver {
   getPageOfCreations(
     @Args("page", { type: () => Int }) page: number,
     @Args("category", { type: () => String, nullable: true }) category: string,
+    @Args("author", { type: () => String, nullable: true }) author: string,
+    @Args("name", { type: () => String, nullable: true }) name: string,
   ) {
-    return this.creationsService.getPageOfCreations(page, category);
+    return this.creationsService.getPageOfCreations(page, category, author, name);
   }
 
   @Query(() => Creation, { name: "getCreation" })

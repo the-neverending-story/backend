@@ -17,14 +17,7 @@ export class CreationsService {
     return { id: id.id as string };
   }
 
-  async getPageOfCreations(page: number, category: string) {
-    if (
-      category &&
-      ["story", "character", "location", "concept"].indexOf(category) === -1
-    ) {
-      throw new Error("category is malformed");
-    }
-
+  async getPageOfCreations(page: number, category: string, author: string, name: string) {
     const creations = await pgdb`
       SELECT
         username author_username,
@@ -35,7 +28,9 @@ export class CreationsService {
         (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE ratings.creation_id = creations.id) AS rating
       FROM creations JOIN users ON users.id = creations.author_id 
       WHERE true 
-      ${category ? pgdb`AND category = ${category}` : pgdb``}
+      ${category && category !== "none" ? pgdb`AND category = ${category}` : pgdb``}
+      ${author ? pgdb`AND username = ${author}` : pgdb``}
+      ${name ? pgdb`AND name = ${name}` : pgdb``}
       LIMIT 15 OFFSET ${(page - 1) * 15};
     `;
 
