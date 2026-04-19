@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, Int } from "@nestjs/graphql";
 
 @ObjectType()
 export class Creation {
@@ -19,4 +19,7 @@ export class Creation {
 
   @Field(() => String, { description: "content of the creation" })
   content!: string;
+
+  @Field(() => Int, { description: "creation score" })
+  rating: number = 0;
 }
