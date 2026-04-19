@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
 import pgdb from "src/db";
+import { JwtPayload } from "src/jwtPayload";
+import { Rating } from "./entities/rating.entity";
 
 @Injectable()
 export class RatingsService {
@@ -12,7 +13,7 @@ export class RatingsService {
     isPositive: boolean,
     accessToken: string,
   ) {
-    const user = await this.jwtService.verifyAsync(accessToken, {
+    const user: JwtPayload = await this.jwtService.verifyAsync(accessToken, {
       secret: process.env.JWT_SECRET,
     });
 
@@ -27,12 +28,8 @@ export class RatingsService {
     return { id: "0", is_positive: isPositive };
   }
 
-  removeRating(id: string) {
-    return "This action adds a new rating";
-  }
-
   async getRate(id: string, accessToken: string) {
-    let user;
+    let user: JwtPayload;
     try {
       user = await this.jwtService.verifyAsync(accessToken, {
         secret: process.env.JWT_SECRET,
@@ -41,7 +38,7 @@ export class RatingsService {
       return { id: "0", is_positive: "" };
     }
 
-    const [rating] = await pgdb`
+    const [rating]: [Rating] = await pgdb`
       SELECT is_positive FROM ratings WHERE voter_id = ${user.id} AND creation_id = ${id};
     `;
 

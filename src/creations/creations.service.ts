@@ -17,7 +17,12 @@ export class CreationsService {
     return { id: id.id as string };
   }
 
-  async getPageOfCreations(page: number, category: string, author: string, name: string) {
+  async getPageOfCreations(
+    page: number,
+    category: string,
+    author: string,
+    name: string,
+  ) {
     const creations = await pgdb`
       SELECT
         username author_username,

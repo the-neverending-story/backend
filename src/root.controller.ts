@@ -19,6 +19,8 @@ require("node-pg-migrate").runner({
   migrationsTable: "pgmigrations",
   count: Infinity,
 });
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require("./cron");
 
 import { Controller, Get, HttpCode } from "@nestjs/common";
 

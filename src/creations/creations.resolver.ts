@@ -33,7 +33,12 @@ export class CreationsResolver {
     @Args("author", { type: () => String, nullable: true }) author: string,
     @Args("name", { type: () => String, nullable: true }) name: string,
   ) {
-    return this.creationsService.getPageOfCreations(page, category, author, name);
+    return this.creationsService.getPageOfCreations(
+      page,
+      category,
+      author,
+      name,
+    );
   }
 
   @Query(() => Creation, { name: "getCreation" })

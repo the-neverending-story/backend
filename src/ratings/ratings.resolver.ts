@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from "@nestjs/graphql";
+import { Resolver, Query, Mutation, Args, Context } from "@nestjs/graphql";
 import { RatingsService } from "./ratings.service";
 import { Rating } from "./entities/rating.entity";
 import { Request } from "express";
@@ -18,13 +18,6 @@ export class RatingsResolver {
       isPositive,
       context.req.cookies["access_token"],
     );
-  }
-
-  @Mutation(() => Rating, { name: "removeRating" })
-  removeRating(
-    @Args("creation_id", { type: () => String }) creationId: string,
-  ) {
-    return this.ratingsService.removeRating(creationId);
   }
 
   @Query(() => Rating, { name: "getRate" })
