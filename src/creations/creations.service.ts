@@ -57,6 +57,9 @@ export class CreationsService {
       FROM creations JOIN users ON users.id = creations.author_id WHERE creations.id = ${id};
     `;
 
-    return creation;
+    return {
+      ...creation,
+      created_at: new Date(creation.created_at).toDateString(),
+    };
   }
 }
