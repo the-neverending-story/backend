@@ -22,6 +22,7 @@ export class CreationsService {
     category: string,
     author: string,
     name: string,
+    in_voting_phase: boolean,
   ) {
     const creations = await pgdb`
       SELECT
@@ -36,6 +37,7 @@ export class CreationsService {
       ${category && category !== "none" ? pgdb`AND category = ${category}` : pgdb``}
       ${author ? pgdb`AND username = ${author}` : pgdb``}
       ${name ? pgdb`AND name = ${name}` : pgdb``}
+      ${in_voting_phase ? pgdb`AND creations.created_at > NOW() - INTERVAL '1 week'` : pgdb``}
       LIMIT 15 OFFSET ${(page - 1) * 15};
     `;
 
