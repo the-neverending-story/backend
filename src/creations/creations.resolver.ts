@@ -28,7 +28,7 @@ export class CreationsResolver {
 
   @Query(() => [Creation], { name: "getCreations" })
   getPageOfCreations(
-    @Args("page", { type: () => Int }) page: number,
+    @Args("page", { type: () => Int, nullable: true }) page: number,
     @Args("category", { type: () => String, nullable: true }) category: string,
     @Args("author", { type: () => String, nullable: true }) author: string,
     @Args("name", { type: () => String, nullable: true }) name: string,

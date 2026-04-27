@@ -22,4 +22,9 @@ export class Creation {
 
   @Field(() => Int, { description: "creation score" })
   rating: number = 0;
+
+  @Field(() => [String], {
+    description: "all creations this creation marked as related to",
+  })
+  relations!: string[];
 }
