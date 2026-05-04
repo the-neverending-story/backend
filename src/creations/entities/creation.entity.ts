@@ -21,10 +21,16 @@ export class Creation {
   content!: string;
 
   @Field(() => Int, { description: "creation score" })
-  rating: number = 0;
+  rating!: number;
 
   @Field(() => [String], {
     description: "all creations this creation marked as related to",
   })
   relations!: string[];
+
+    @Field(() => Boolean, {
+    description: "if its canon",
+    nullable: true
+  })
+  is_canon?: boolean;
 }

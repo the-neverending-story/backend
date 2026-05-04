@@ -31,6 +31,7 @@ export class CreationsService {
         creations.id,
         creations.created_at,
         category,
+        is_canon,
         (SELECT related_to_id FROM relations WHERE relations.creation_id = creations.id) AS relations,
         (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE ratings.creation_id = creations.id) AS rating
       FROM creations JOIN users ON users.id = creations.author_id 
@@ -39,7 +40,7 @@ export class CreationsService {
       ${author ? pgdb`AND username = ${author}` : pgdb``}
       ${name ? pgdb`AND name = ${name}` : pgdb``}
       ${in_voting_phase ? pgdb`AND creations.created_at > NOW() - INTERVAL '1 week'` : pgdb``}
-      ${page && page > 0 ? pgdb`LIMIT 15 OFFSET ${(page - 1) * 15}` : pgdb``};
+      ${page !== null && page > 0 ? pgdb`LIMIT 15 OFFSET ${(page - 1) * 15}` : pgdb``};
     `;
 
     return creations.map((e) => {

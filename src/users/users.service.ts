@@ -103,4 +103,14 @@ export class UsersService {
       id: user.id as string,
     };
   }
+
+  async getUser(username: string) {
+    const [user] = await pgdb`select username, created_at, role, id from users where username = ${username};`
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {...user, created_at: new Date(user.created_at).toDateString()};
+  }
+
 }
