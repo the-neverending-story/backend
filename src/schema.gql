@@ -33,7 +33,7 @@ type Creation {
 
 type Mutation {
   addRating(creationId: String!, isPositive: Boolean!): Rating!
-  createCreation(category: String!, content: String!, name: String!): Creation!
+  createCreation(category: String!, content: String!, name: String!, relations: [String]): Creation!
   login(password: String!, username: String!): User!
   register(email: String!, password: String!, username: String!): User!
 }

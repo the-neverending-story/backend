@@ -9,21 +9,33 @@ export class CreationsService {
     category: string,
     content: string,
     user: JwtPayload,
+    relations: string[]
   ) {
     const [id] = await pgdb`
       INSERT INTO creations (name, category, content, author_id) VALUES (${name}, ${category}, ${content}, ${user.id}) RETURNING id;
     `;
+    if (relations) {
+      await pgdb`
+      INSERT INTO relations (creation_id, related_to_id) VALUES
+      ${relations.map((relation_id, index) => {
+        return pgdb`(${id.id}, ${relation_id})${index !== relations.length - 1 ? pgdb`,` : pgdb``}`
+      })}
+    `
+    }
 
     return { id: id.id as string };
   }
 
   async getPageOfCreations(
     page: number,
-    category: string,
-    author: string,
-    name: string,
-    in_voting_phase: boolean,
+    category: string | undefined,
+    author: string | undefined,
+    name: string | undefined,
+    in_voting_phase: boolean | undefined,
   ) {
+    if (page === undefined) { throw new Error('page is required') }
+    if (name !== undefined) { name = name.replaceAll("%", "") }
+
     const creations = await pgdb`
       SELECT
         username author_username,
@@ -36,11 +48,11 @@ export class CreationsService {
         (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE ratings.creation_id = creations.id) AS rating
       FROM creations JOIN users ON users.id = creations.author_id 
       WHERE true 
-      ${category && category !== "none" ? pgdb`AND category = ${category}` : pgdb``}
+      ${category ? pgdb`AND category = ${category}` : pgdb``}
       ${author ? pgdb`AND username = ${author}` : pgdb``}
-      ${name ? pgdb`AND name = ${name}` : pgdb``}
+      ${name ? pgdb`AND name ILIKE ${`%${name}%`}` : pgdb``}
       ${in_voting_phase ? pgdb`AND creations.created_at > NOW() - INTERVAL '1 week'` : pgdb``}
-      ${page !== null && page > 0 ? pgdb`LIMIT 15 OFFSET ${(page - 1) * 15}` : pgdb``};
+      LIMIT 15 OFFSET ${(page - 1) * 15};
     `;
 
     return creations.map((e) => {
