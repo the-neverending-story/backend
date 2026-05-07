@@ -28,9 +28,9 @@ export class Creation {
   })
   relations!: string[];
 
-    @Field(() => Boolean, {
+  @Field(() => Boolean, {
     description: "if its canon",
-    nullable: true
+    nullable: true,
   })
   is_canon?: boolean;
 }

@@ -16,7 +16,8 @@ export class CreationsResolver {
     @Args("name", { type: () => String }) name: string,
     @Args("category", { type: () => String }) category: string,
     @Args("content", { type: () => String }) content: string,
-    @Args("relations", { type: () => [String], nullable: 'itemsAndList' }) relations: string[],
+    @Args("relations", { type: () => [String], nullable: "itemsAndList" })
+    relations: string[],
     @Context() context: { req: Request & { user: JwtPayload } },
   ) {
     return this.creationsService.create(
@@ -24,7 +25,7 @@ export class CreationsResolver {
       category,
       content,
       context.req.user,
-      relations
+      relations,
     );
   }
 

@@ -9,7 +9,7 @@ export class CreationsService {
     category: string,
     content: string,
     user: JwtPayload,
-    relations: string[]
+    relations: string[],
   ) {
     const [id] = await pgdb`
       INSERT INTO creations (name, category, content, author_id) VALUES (${name}, ${category}, ${content}, ${user.id}) RETURNING id;
@@ -18,9 +18,9 @@ export class CreationsService {
       await pgdb`
       INSERT INTO relations (creation_id, related_to_id) VALUES
       ${relations.map((relation_id, index) => {
-        return pgdb`(${id.id}, ${relation_id})${index !== relations.length - 1 ? pgdb`,` : pgdb``}`
+        return pgdb`(${id.id}, ${relation_id})${index !== relations.length - 1 ? pgdb`,` : pgdb``}`;
       })}
-    `
+    `;
     }
 
     return { id: id.id as string };
@@ -33,8 +33,12 @@ export class CreationsService {
     name: string | undefined,
     in_voting_phase: boolean | undefined,
   ) {
-    if (page === undefined) { throw new Error('page is required') }
-    if (name !== undefined) { name = name.replaceAll("%", "") }
+    if (page === undefined) {
+      throw new Error("page is required");
+    }
+    if (name !== undefined) {
+      name = name.replaceAll("%", "");
+    }
 
     const creations = await pgdb`
       SELECT
@@ -44,7 +48,6 @@ export class CreationsService {
         creations.created_at,
         category,
         is_canon,
-        (SELECT related_to_id FROM relations WHERE relations.creation_id = creations.id) AS relations,
         (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE ratings.creation_id = creations.id) AS rating
       FROM creations JOIN users ON users.id = creations.author_id 
       WHERE true 
@@ -55,11 +58,15 @@ export class CreationsService {
       LIMIT 15 OFFSET ${(page - 1) * 15};
     `;
 
-    return creations.map((e) => {
+    return creations.map(async (e) => {
+      const relations = await pgdb`
+        SELECT related_to_id FROM relations WHERE relations.creation_id = ${e.id};
+      `;
+
       return {
         ...e,
         created_at: new Date(e.created_at).toDateString(),
-        relations: e.relations ?? [],
+        relations: relations.map((e) => e.related_to_id),
       };
     });
   }
