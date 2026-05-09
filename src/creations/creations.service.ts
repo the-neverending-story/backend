@@ -32,6 +32,7 @@ export class CreationsService {
     author: string | undefined,
     name: string | undefined,
     in_voting_phase: boolean | undefined,
+    is_canon: boolean | undefined
   ) {
     if (page === undefined) {
       throw new Error("page is required");
@@ -55,6 +56,7 @@ export class CreationsService {
       ${author ? pgdb`AND username = ${author}` : pgdb``}
       ${name ? pgdb`AND name ILIKE ${`%${name}%`}` : pgdb``}
       ${in_voting_phase ? pgdb`AND creations.created_at > NOW() - INTERVAL '1 week'` : pgdb``}
+      ${is_canon !== undefined ? pgdb`AND is_canon = ${is_canon}` : pgdb``}
       LIMIT 15 OFFSET ${(page - 1) * 15};
     `;
 

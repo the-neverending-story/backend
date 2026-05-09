@@ -35,8 +35,8 @@ export class CreationsResolver {
     @Args("category", { type: () => String, nullable: true }) category: string,
     @Args("author", { type: () => String, nullable: true }) author: string,
     @Args("name", { type: () => String, nullable: true }) name: string,
-    @Args("in_voting_phase", { type: () => Boolean, nullable: true })
-    in_voting_phase: boolean,
+    @Args("in_voting_phase", { type: () => Boolean, nullable: true }) in_voting_phase: boolean,
+    @Args("isCanon", { type: () => Boolean, nullable: true }) is_canon: boolean,
   ) {
     return this.creationsService.getPageOfCreations(
       page,
@@ -44,6 +44,7 @@ export class CreationsResolver {
       author,
       name,
       in_voting_phase,
+      is_canon
     );
   }
 
