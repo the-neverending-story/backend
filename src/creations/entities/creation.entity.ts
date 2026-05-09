@@ -11,7 +11,7 @@ export class Creation {
   @Field(() => String, { description: "authors username" })
   author_username!: string;
 
-  @Field(() => String, { description: "creation date" })
+  @Field(() => String, { description: "creation date in unix epoch" })
   created_at!: string;
 
   @Field(() => String, { description: "category of the creation" })

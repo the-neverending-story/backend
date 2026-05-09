@@ -8,7 +8,7 @@ export class User {
   @Field(() => String, { description: "Username" })
   username!: string;
 
-  @Field(() => String, { description: "Timestamp of creation" })
+  @Field(() => String, { description: "unix epoch creation date" })
   created_at!: string;
 
   @Field(() => String, {

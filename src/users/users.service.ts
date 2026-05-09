@@ -111,6 +111,6 @@ export class UsersService {
       throw new Error("User not found");
     }
 
-    return { ...user, created_at: new Date(user.created_at).toDateString() };
+    return user;
   }
 }

@@ -67,7 +67,6 @@ export class CreationsService {
 
       return {
         ...e,
-        created_at: new Date(e.created_at).toDateString(),
         relations: relations.map((e) => e.related_to_id),
       };
     });
@@ -86,9 +85,6 @@ export class CreationsService {
       FROM creations JOIN users ON users.id = creations.author_id WHERE creations.id = ${id};
     `;
 
-    return {
-      ...creation,
-      created_at: new Date(creation.created_at).toDateString(),
-    };
+    return creation;
   }
 }

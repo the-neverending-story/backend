@@ -12,7 +12,7 @@ type Creation {
   """content of the creation"""
   content: String!
 
-  """creation date"""
+  """creation date in unix epoch"""
   created_at: String!
 
   """creation id"""
@@ -60,7 +60,7 @@ type Rating {
 }
 
 type User {
-  """Timestamp of creation"""
+  """unix epoch creation date"""
   created_at: String!
 
   """uuid"""
