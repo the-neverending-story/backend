@@ -41,6 +41,7 @@ type Mutation {
 type Query {
   getCreation(id: String!): Creation!
   getCreations(author: String, category: String, in_voting_phase: Boolean, isCanon: Boolean, name: String, page: Int): [Creation!]!
+  getFeaturedCreations: [Creation!]!
   getRate(id: String!): Rating!
   getUser(username: String!): User!
 }

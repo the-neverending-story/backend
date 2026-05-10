@@ -52,4 +52,9 @@ export class CreationsResolver {
   getCreation(@Args("id", { type: () => String }) id: string) {
     return this.creationsService.getCreationById(id);
   }
+
+  @Query(() => [Creation], { name: "getFeaturedCreations" })
+  getFeaturedCreations() {
+    return this.creationsService.getFeaturedCreations();
+  }
 }

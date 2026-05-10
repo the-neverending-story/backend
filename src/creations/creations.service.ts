@@ -87,4 +87,11 @@ export class CreationsService {
 
     return creation;
   }
+
+  async getFeaturedCreations() {
+    const creations = await pgdb`
+      SELECT * FROM creations ORDER BY (SELECT COALESCE(SUM(CASE WHEN is_positive = true THEN 1 WHEN is_positive = false THEN -1 END), 0) FROM ratings WHERE creation_id = creations.id) DESC LIMIT 10;
+    `
+    return creations
+  }
 }
