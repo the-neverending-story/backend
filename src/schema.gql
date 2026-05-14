@@ -36,6 +36,7 @@ type Mutation {
   createCreation(category: String!, content: String!, name: String!, relations: [String]): Creation!
   login(password: String!, username: String!): User!
   register(email: String!, password: String!, username: String!): User!
+  updateUser(bio: String): Boolean!
 }
 
 type Query {
@@ -61,6 +62,9 @@ type Rating {
 }
 
 type User {
+  """user bio"""
+  bio: String
+
   """unix epoch creation date"""
   created_at: String!
 

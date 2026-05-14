@@ -14,7 +14,7 @@ export class CreationsService {
     const [id] = await pgdb`
       INSERT INTO creations (name, category, content, author_id) VALUES (${name}, ${category}, ${content}, ${user.id}) RETURNING id;
     `;
-    if (relations) {
+    if (relations.length > 0) {
       await pgdb`
       INSERT INTO relations (creation_id, related_to_id) VALUES
       ${relations.map((relation_id, index) => {

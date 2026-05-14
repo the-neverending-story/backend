@@ -15,4 +15,7 @@ export class User {
     description: "Role of the user (e.g. admin, moderator, default)",
   })
   role!: string;
+
+  @Field(() => String, { description: "user bio", nullable: true })
+  bio: string = 'b';
 }

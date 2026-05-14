@@ -3,6 +3,7 @@ import pgdb from "../db";
 import bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
+import { JwtPayload } from "src/auth/jwt.strategy";
 
 @Injectable()
 export class UsersService {
@@ -41,7 +42,7 @@ export class UsersService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [userIdAndRole] = await pgdb`
-      INSERT INTO users (username, password, email, role) VALUES (${username}, ${hashedPassword}, ${email}, 'default') RETURNING id, role
+      INSERT INTO users (username, password, email, role, bio) VALUES (${username}, ${hashedPassword}, ${email}, 'default', 'I'm new!') RETURNING id, role
     `;
 
     const payload = {
@@ -106,11 +107,21 @@ export class UsersService {
 
   async getUser(username: string) {
     const [user] =
-      await pgdb`select username, created_at, role, id from users where username = ${username};`;
+      await pgdb`select username, created_at, role, id, bio from users where username = ${username};`;
     if (!user) {
       throw new Error("User not found");
     }
 
     return user;
+  }
+
+  async updateUser(inputObj: { bio: string }, user: JwtPayload) {
+    
+    if(!Object.keys(inputObj)) { return false; }
+    
+    await pgdb`
+      UPDATE users SET ${inputObj.bio !== undefined ? pgdb`bio = ${inputObj.bio}` : pgdb``} WHERE id = ${user.id};
+    `
+    return true;
   }
 }

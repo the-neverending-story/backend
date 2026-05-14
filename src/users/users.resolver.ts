@@ -1,11 +1,14 @@
 import { Resolver, Query, Mutation, Args, Context } from "@nestjs/graphql";
 import { UsersService } from "./users.service";
 import { User } from "./entities/user.entity";
-import { Response } from "express";
+import { Request, Response } from "express";
+import { JwtPayload } from "src/auth/jwt.strategy";
+import { UseGuards } from "@nestjs/common";
+import { GqlAuthGuard } from "src/auth/gql-auth.guard";
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Query(() => User, { name: "getUser" })
   getUser(@Args("username", { type: () => String }) username: string) {
@@ -29,6 +32,16 @@ export class UsersResolver {
     @Context() context: { res: Response },
   ) {
     const result = this.usersService.login(username, password, context.res);
+    return result;
+  }
+  
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean, { name: "updateUser" })
+  updateUser(
+    @Args("bio", { type: () => String, nullable: true } ) bio: string,
+    @Context() context: { req: Request & { user: JwtPayload } },
+  ) {
+    const result = this.usersService.updateUser({ bio }, context.req.user);
     return result;
   }
 }
